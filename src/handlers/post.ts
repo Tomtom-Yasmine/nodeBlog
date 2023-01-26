@@ -32,7 +32,7 @@ export const getAllPosts: RequestHandler = async (req, res) => {
         if (!posts) {
             return res.status(500).json({ error: "Post list fetch failed" });
         }
-        return res.status(200).json({ message: posts });
+        return res.status(200).json({ posts });
     } catch (e) {
         console.error({ error: e });
         return res.status(500).json();
@@ -45,7 +45,7 @@ export const getPostById: RequestHandler = async (req, res) => {
         if (!post) {
             return res.status(404).json({ error: "Post not found" });
         }
-        return res.status(200).json({ message: post });
+        return res.status(200).json({ post });
     } catch (e) {
         console.error({ error: e });
         return res.status(500).json();
@@ -58,7 +58,7 @@ export const deletePost: RequestHandler = async (req, res) => {
         if (!post) {
             return res.status(404).json({ error: "Post not found" });
         }
-        return res.status(200).json({ message: post });
+        return res.status(200).json({ post });
     } catch (e) {
         console.error({ error: e });
         return res.status(500).json();
@@ -87,7 +87,7 @@ export const updatePost: RequestHandler = async (req, res) => {
         if (!result) {
             return res.status(500).json({ error: "Post update failed" });
         }
-        return res.status(200).json({ message: "Post updated successfully " });
+        return res.status(200).json({ message: "Post updated successfully" });
     }
     catch (e) {
         console.error({ error: e });
