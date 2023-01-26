@@ -20,7 +20,8 @@ export const createNewUser: RequestHandler = async (req: TypedRequestParam, res)
     const user = await db.user.create({
       data: {
         username: req.body.username,
-        password: hash
+        password: hash,
+        role: 'ADMIN'
       }
     });
 
