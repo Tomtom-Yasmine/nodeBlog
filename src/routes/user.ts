@@ -5,6 +5,7 @@ import {
   enrichUser,
 } from '../modules/auth';
 import {
+  deleteUser,
   grantRoleToUser,
 } from '../handlers/user';
 
@@ -15,6 +16,13 @@ app.get(
   enrichUser,
   adminProtect,
   grantRoleToUser
+);
+
+app.delete(
+  '/user/:id',
+  enrichUser,
+  adminProtect,
+  deleteUser
 );
 
 app.get('/user', (req, res) => {
