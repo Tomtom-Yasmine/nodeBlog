@@ -4,7 +4,6 @@ import { comparePassword, createJWT, hashPassword } from "../modules/auth";
 
 export const createPost: RequestHandler = async (req, res) => {
     try {
-        console.log(req.user);
         if (!(req.body?.title)) {
             throw new Error('Invalid body provided');
         }
