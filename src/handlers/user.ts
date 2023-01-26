@@ -1,4 +1,5 @@
 import { Request, RequestHandler } from 'express';
+import { Role } from '@prisma/client';
 import db from '../db';
 import { comparePassword, createJWT, hashPassword } from '../modules/auth';
 
@@ -61,23 +62,41 @@ export const signIn: RequestHandler = async (req: TypedRequestParam, res) => {
 
 export const grantRoleToUser: RequestHandler = async (req, res) => {
   try {
-    const { id, newRole } = req.params;
+    const id = req.params.id;
+    const newRole = req.body.role as Role;
     if (! (id && newRole)) {
       throw new Error('Invalid body provided');
     }
     const user = await db.user.update({
-      where: {
-        id
-      },
-      data: {
-        role: newRole
-      }
+      where: { id },
+      data: { role: newRole }
     });
 
     if (user) {
       return res.status(200).json();
     } else {
       return res.status(404).json({ error: 'User not found or not updated' });
+    }
+  } catch (e) {
+    res.status(500);
+    return console.error({ error: e });
+  }
+};
+
+export const deleteUser: RequestHandler = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (! id) {
+      throw new Error('Invalid body provided');
+    }
+    const user = await db.user.delete({
+      where: { id }
+    });
+
+    if (user) {
+      return res.status(200).json();
+    } else {
+      return res.status(404).json({ error: 'User not found or not deleted' });
     }
   } catch (e) {
     res.status(500);
