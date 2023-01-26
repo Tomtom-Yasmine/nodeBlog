@@ -11,12 +11,14 @@ datasource db {
 }
 
 model User {
-  id       String    @id @unique @default(uuid())
-  role     Role      @default(USER)
-  username String    @unique @db.VarChar(64)
-  password String
-  posts    Post[]
-  comments Comment[]
+  id        String    @id @unique @default(uuid())
+  role      Role      @default(USER)
+  username  String    @unique @db.VarChar(64)
+  password  String
+  posts     Post[]
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 }
 
 model Post {
@@ -26,16 +28,20 @@ model Post {
   comments   Comment[]
   authorId   String
   commentIds String[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
 }
 
 model Comment {
-  id       String @id @unique @default(uuid())
-  title    String
-  content  String
-  author   User   @relation(fields: [authorId], references: [id])
-  post     Post   @relation(fields: [postId], references: [id])
-  authorId String
-  postId   String
+  id        String   @id @unique @default(uuid())
+  title     String
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
+  authorId  String
+  postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 enum Role {
