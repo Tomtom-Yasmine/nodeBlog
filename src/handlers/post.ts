@@ -26,7 +26,8 @@ export const createPost: RequestHandler = async (req, res) => {
 export const getAllPosts: RequestHandler = async (req, res) => {
     try {
         const posts = await db.post.findMany(
-            (req.user.role === 'ADMIN') ? {} : { where: { authorId: req.user.id } }
+            // (req.user.role === 'ADMIN') ? {} : 
+            { where: { authorId: req.user.id } }
         );
         if (!posts) {
             return res.status(500).json({ error: "Post list fetch failed" });
@@ -42,7 +43,7 @@ export const getPostById: RequestHandler = async (req, res) => {
     try {
         const post = await db.post.findUnique({ where: { id: req.params.id } });
         if (!post) {
-            return res.status(500).json({ error: "Post fetch failed" });
+            return res.status(404).json({ error: "Post not found" });
         }
         return res.status(200).json({ message: post });
     } catch (e) {
@@ -53,9 +54,9 @@ export const getPostById: RequestHandler = async (req, res) => {
 
 export const deletePost: RequestHandler = async (req, res) => {
     try {
-        const post = await db.post.delete({ where: { id: req.params.id } });
+        const post = await db.post.findUnique({ where: { id: req.params.id } });
         if (!post) {
-            return res.status(500).json({ error: "Post delete failed" });
+            return res.status(404).json({ error: "Post not found" });
         }
         return res.status(200).json({ message: post });
     } catch (e) {
