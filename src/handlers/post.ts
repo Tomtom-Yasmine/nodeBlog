@@ -1,6 +1,8 @@
+import { Role } from "@prisma/client";
 import { Request, RequestHandler } from "express";
 import db from "../db";
 import { comparePassword, createJWT, hashPassword } from "../modules/auth";
+import dayjs from 'dayjs';
 
 export const createPost: RequestHandler = async (req, res) => {
     try {
@@ -25,11 +27,29 @@ export const createPost: RequestHandler = async (req, res) => {
 
 export const getAllPosts: RequestHandler = async (req, res) => {
     try {
+        const { from } = req.query;
+        const fromDate = from ? new Date((+from) * 1000) : null;
+        console.log({ fromDate });
+
+        let where = {};
+        if (fromDate) {
+            where = {
+                ...where,
+                createdAt: {
+                    gte: fromDate
+                }
+            }
+        }
+        if (req.user.role !== Role.ADMIN) {
+            where = {
+                ...where,
+                authorId: req.user.id
+            };
+        }
         const posts = await db.post.findMany(
-            (req.user.role === 'ADMIN') ? undefined :
-                { where: { authorId: req.user.id } }
+            (where && { where }) || undefined
         );
-        if (!posts) {
+        if (! posts) {
             return res.status(500).json({ error: "Post list fetch failed" });
         }
         return res.status(200).json({ posts });
@@ -55,36 +75,39 @@ export const getPostById: RequestHandler = async (req, res) => {
 export const deletePost: RequestHandler = async (req, res) => {
     try {
         const post = await db.post.findUnique({ where: { id: req.params.id } });
-        if (!post) {
-            return res.status(404).json({ error: "Post not found" });
+        if (! post || (post.authorId !== req.user.id && req.user.role !== Role.ADMIN)) {
+            return res.status(403).json({ error: "Post does not exist or you are its owner" });
         }
-        return res.status(200).json({ post });
+        const deletedPost = await db.post.delete({ where: { id: post.id } });
+        if (! deletedPost) {
+            return res.status(500).json({ error: "Post deletion failed" });
+        }
+        return res.status(200).json({ post: deletedPost });
     } catch (e) {
         console.error({ error: e });
         return res.status(500).json();
     }
 }
 
-
 export const updatePost: RequestHandler = async (req, res) => {
     try {
+        if (! req.body?.title) {
+            console.error({ error: "Invalid body provided" });
+            return res.status(400).json({ error: "Invalid body provided" });
+        }
         const post = await db.post.findUnique({ where: { id: req.params.id } });
-        const { title } = req.body;
-        if (!post) {
-            return res.status(404).json({ error: "Post list not found" });
+        if (! post || (post.authorId !== req.user.id && req.user.role !== Role.ADMIN)) {
+            return res.status(403).json({ error: "Post does not exist or you are its owner" });
         }
-        if (!(post.authorId === req.user.id)) {
-            return res.status(403).json({ error: "Post access denied (forbidden)" });
-        }
-        const result = await db.post.update({
+        const updatedPost = await db.post.update({
             where: {
-                id: req.params.id,
+                id: post.id,
             },
             data: {
-                title,
+                title: req.body.title
             }
         });
-        if (!result) {
+        if (! updatedPost) {
             return res.status(500).json({ error: "Post update failed" });
         }
         return res.status(200).json({ message: "Post updated successfully" });

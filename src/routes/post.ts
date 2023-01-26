@@ -4,10 +4,10 @@ import { createPost, getAllPosts, getPostById, deletePost, updatePost } from '..
 
 const app = express.Router();
 
-app.post('/post', createPost);
-app.get('/allPosts', enrichUser, getAllPosts);
+app.get('/posts', enrichUser, getAllPosts); // ?from=[Date]
 app.get('/post/:id', enrichUser, getPostById);
-app.delete('/post/:id', enrichUser, deletePost);
+app.post('/post', createPost);
 app.put('/post/:id', enrichUser, updatePost);
+app.delete('/post/:id', enrichUser, deletePost);
 
 export default app;
