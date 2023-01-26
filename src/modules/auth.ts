@@ -57,6 +57,7 @@ export const enrichUser: RequestHandler = async (req, res, next) => {
   }
 
   req.user = user;
+  console.log({ user });
   return next();
 };
 
