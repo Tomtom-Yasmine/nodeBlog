@@ -2,7 +2,6 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import db from './db';
 import userRoutes from './routes/user';
-import todoListRoutes from './routes/todo';
 import { protect } from './modules/auth';
 import { createNewUser, signIn } from './handlers/user';
 
@@ -18,13 +17,12 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api', protect, [
-  userRoutes,
-  todoListRoutes
+  userRoutes
 ]);
 
 app.post('/signUp', createNewUser);
 app.post('/signIn', signIn);
 
 app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`)
-})
+  console.log(`Server is listening on port ${PORT}`);
+});
