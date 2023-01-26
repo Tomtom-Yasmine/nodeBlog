@@ -1,4 +1,5 @@
 import { Request, RequestHandler } from 'express';
+import { Role } from '@prisma/client';
 import db from '../db';
 import { comparePassword, createJWT, hashPassword } from '../modules/auth';
 
@@ -61,7 +62,8 @@ export const signIn: RequestHandler = async (req: TypedRequestParam, res) => {
 
 export const grantRoleToUser: RequestHandler = async (req, res) => {
   try {
-    const { id, newRole } = req.params;
+    const id = req.params.id;
+    const newRole = req.body.role as Role;
     if (! (id && newRole)) {
       throw new Error('Invalid body provided');
     }
