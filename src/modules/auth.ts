@@ -39,7 +39,6 @@ export const protect: RequestHandler = (req, res, next) => {
 };
 
 export const adminProtect: RequestHandler = (req, res, next) => {
-  console.log({ reqUser: req.user });
   if (req.user?.role !== 'ADMIN') {
     return res.status(401).json({ message: 'Admin privileges required' });
   }
