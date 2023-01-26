@@ -4,6 +4,7 @@ import { comparePassword, createJWT, hashPassword } from "../modules/auth";
 
 export const createPost: RequestHandler = async (req, res) => {
     try {
+        console.log(req.user);
         if (!(req.body?.title)) {
             throw new Error('Invalid body provided');
         }
@@ -26,8 +27,8 @@ export const createPost: RequestHandler = async (req, res) => {
 export const getAllPosts: RequestHandler = async (req, res) => {
     try {
         const posts = await db.post.findMany(
-            // (req.user.role === 'ADMIN') ? {} : 
-            { where: { authorId: req.user.id } }
+            (req.user.role === 'ADMIN') ? undefined :
+                { where: { authorId: req.user.id } }
         );
         if (!posts) {
             return res.status(500).json({ error: "Post list fetch failed" });
