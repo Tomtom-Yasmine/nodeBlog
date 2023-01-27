@@ -1,5 +1,6 @@
 import { Request, RequestHandler } from 'express';
 import { Role } from '@prisma/client';
+import validators from '../modules/validators';
 import db from '../db';
 import { comparePassword, createJWT, hashPassword } from '../modules/auth';
 
@@ -10,14 +11,14 @@ interface TypedRequestParam extends Request {
   }
 }
 
-export const createNewUser: RequestHandler = async (req: TypedRequestParam, res) => {
+export const createNewUser: RequestHandler = async (req, res) => {
   try {
-    if (!(req.body?.username && req.body?.password)) {
-      throw new Error('Invalid body provided');
+    const errors = validators.$validationResult(req);
+    if (! errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-
+    
     const hash = await hashPassword(req.body.password);
-
     const user = await db.user.create({
       data: {
         username: req.body.username,
@@ -39,11 +40,13 @@ export const createNewUser: RequestHandler = async (req: TypedRequestParam, res)
   }
 }
 
-export const signIn: RequestHandler = async (req: TypedRequestParam, res) => {
+export const signIn: RequestHandler = async (req, res) => {
   try {
-    if (!(req.body?.username && req.body?.password)) {
-      throw new Error('Invalid body provided');
+    const errors = validators.$validationResult(req);
+    if (! errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+
     const user = await db.user.findUnique({
       where: {
         username: req.body.username
@@ -94,11 +97,13 @@ export const getUsers: RequestHandler = async (req, res) => {
 
 export const grantRoleToUser: RequestHandler = async (req, res) => {
   try {
+    const errors = validators.$validationResult(req);
+    if (! errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    
     const id = req.params.userId;
     const newRole = req.body.role as Role;
-    if (! (id && newRole)) {
-      throw new Error('Invalid body provided');
-    }
     const user = await db.user.update({
       where: { id },
       data: { role: newRole }
@@ -117,10 +122,12 @@ export const grantRoleToUser: RequestHandler = async (req, res) => {
 
 export const deleteUser: RequestHandler = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (! id) {
-      throw new Error('Invalid body provided');
+    const errors = validators.$validationResult(req);
+    if (! errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+
+    const id = req.params.userId;
     const user = await db.user.delete({
       where: { id }
     });

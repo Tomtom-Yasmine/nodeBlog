@@ -9,6 +9,8 @@ import {
   getUsers,
   grantRoleToUser,
 } from '../handlers/user';
+import validators from '../modules/validators';
+
 
 const app = express.Router();
 
@@ -23,18 +25,17 @@ app.put(
   '/user/:userId/grant',
   enrichUser,
   adminProtect,
+  validators.user.idInParam(),
+  validators.user.roleInBody(),
   grantRoleToUser
 );
 
 app.delete(
-  '/user/:id',
+  '/user/:userId',
   enrichUser,
   adminProtect,
+  validators.user.idInParam(),
   deleteUser
 );
-
-app.get('/user', (req, res) => {
-  res.status(200).json({ message: 'Hello user' });
-});
 
 export default app;
