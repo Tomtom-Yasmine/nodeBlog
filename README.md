@@ -12,9 +12,9 @@ Ce projet est une API en utilisant Node.js, Express. Il permet aux utilisateurs 
 
 ## Prérequis
 
-- Une application permettant de tester des requêtes telle que Postman.
-
-
+- Un serveur de base de données PostgreSQL
+- Le gestionnaire de paquet NPM
+- Client de requête HTTP (tel que POSTMAN)
 
 ## Fonctionnalités
 
@@ -23,22 +23,41 @@ Notre API permet aux utilisateurs de :
 - Se connecter
 - Créer des articles, les modifier et les supprimer
 - Commenter des articles ainsi que modifier et supprimer ses commentaires
-- Pour les administrateurs : gérer les utilisateurs, donner le role Admin a un autre utilisateur, modifier et supprimer les utilisateurs. Il peut aussi supprimer des commentaires.
-## Utilisation
+- Pour les administrateurs : gérer les utilisateurs, donner le role Admin ou User a un autre utilisateur, modifier et supprimer les utilisateurs. Il peut aussi supprimer des commentaires.
 
-- Lancer POSTMAN
-
-
+## Installation
+`git clone https://github.com/Tomtom-Yasmine/nodeBlog.git`
+`npm install && npm run build`
+`npm run start`
     
 ## Routes
 
-Toutes les routes commençant par /api sont protégées par un jeton d'authentification.
-Toutes les routes contenant un corps de requete sont vérifiées à l'aide d'express-validator.
+Toutes les routes commençant par `/api` sont protégées par un jeton d'authentification.
+Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'express-validator (hors `comment`, en cours de développement).
 
 Pour tester, voici deux tokens valides : 
 User xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-Admin :xxxxxxxxxxxxxxxxxxx
-
+####Compte Admin : 
+```JSON
+  {
+    "username": "admin",
+    "password": "6Rd#u0rts^.fPb|4"
+  }
+```
+#### Compte user
+```JSON
+{
+    "username": "user",
+    "password": "3bd#yiGs^.fPb|K"
+}
+```
+#### Autre compte user
+```JSON
+{
+    "username": "user2",
+    "password": "5fbd#iyhs^.fPv|K"
+}
+```
 ### SignIn & SignUp
 
 `POST '/signUp'` : Cette route permet à un utilisateur de s'inscrire. Elle retourne les informations de l'utilisateur connecté (sauf le password). Par défaut un utilisateur a le role "USER".
