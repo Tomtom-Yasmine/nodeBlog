@@ -25,6 +25,9 @@ Notre API permet aux utilisateurs de :
 - Commenter des articles ainsi que modifier et supprimer ses commentaires
 - Pour les administrateurs : gérer les utilisateurs, donner le role Admin ou User a un autre utilisateur, modifier et supprimer les utilisateurs. Il peut aussi supprimer des commentaires.
 
+## Déploiement
+Lien du projet déployé : https://blog-k6js.onrender.com
+
 ## Installation
 ### Git clone
 ``` 
