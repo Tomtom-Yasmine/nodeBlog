@@ -26,9 +26,16 @@ Notre API permet aux utilisateurs de :
 - Pour les administrateurs : gérer les utilisateurs, donner le role Admin ou User a un autre utilisateur, modifier et supprimer les utilisateurs. Il peut aussi supprimer des commentaires.
 
 ## Installation
-`git clone https://github.com/Tomtom-Yasmine/nodeBlog.git`
-`npm install && npm run build`
-`npm run start`
+### Git clone
+```bash 
+git clone https://github.com/Tomtom-Yasmine/nodeBlog.git```
+
+### NPM
+```bash
+npm install && npm run build```
+
+```bash
+npm run start```
     
 ## Routes
 
