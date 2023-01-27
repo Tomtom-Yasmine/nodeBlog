@@ -45,9 +45,7 @@ npm run start
 Toutes les routes commençant par `/api` sont protégées par un jeton d'authentification.
 Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'express-validator (hors `comment`, en cours de développement).
 
-Pour tester, voici deux tokens valides : 
-User xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-####Compte Admin : 
+
 ```JSON
   {
     "username": "admin",
