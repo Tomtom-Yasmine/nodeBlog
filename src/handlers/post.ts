@@ -2,12 +2,15 @@ import { Role } from "@prisma/client";
 import { RequestHandler } from "express";
 import db from "../db";
 import dayjs from 'dayjs';
+import validators from "../modules/validators";
+
 
 export const createPost: RequestHandler = async (req, res) => {
     try {
-        if (! (req.body?.title && req.body?.content)) {
-            throw new Error('Invalid body provided');
-        }
+        const errors = validators.$validationResult(req);
+    if (! errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
         const post = await db.post.create({
             data: {
                 title: req.body.title,
@@ -15,7 +18,7 @@ export const createPost: RequestHandler = async (req, res) => {
                 authorId: req.user.id,
             }
         });
-        if (!post) {
+        if (! post) {
             return res.status(500).json({ error: "Post creation failed" });
         }
         return res.status(201).json({ post });
@@ -27,7 +30,12 @@ export const createPost: RequestHandler = async (req, res) => {
 
 export const getAllPosts: RequestHandler = async (req, res) => {
     try {
-        const { from } = req.query;
+        const errors = validators.$validationResult(req);
+        if (! errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+        }
+
+        const from = req.query.from;
         const fromDate = from ? new Date((+from) * 1000) : null;
 
         let where = {};
@@ -57,8 +65,13 @@ export const getAllPosts: RequestHandler = async (req, res) => {
 
 export const getPostById: RequestHandler = async (req, res) => {
     try {
+        const errors = validators.$validationResult(req);
+        if (! errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+        }
+
         const post = await db.post.findUnique({
-            where: { id: req.params.id },
+            where: { id: req.params.postId },
             include: { comments: true }
         });
         if (! post) {
@@ -73,7 +86,12 @@ export const getPostById: RequestHandler = async (req, res) => {
 
 export const deletePost: RequestHandler = async (req, res) => {
     try {
-        const post = await db.post.findUnique({ where: { id: req.params.id } });
+        const errors = validators.$validationResult(req);
+        if (! errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const post = await db.post.findUnique({ where: { id: req.params.postId } });
         if (! post || (post.authorId !== req.user.id && req.user.role !== Role.ADMIN)) {
             return res.status(403).json({ error: "Post does not exist or you are its owner" });
         }
@@ -93,7 +111,7 @@ export const updatePost: RequestHandler = async (req, res) => {
         if (! (req.body?.title || req.body?.content)) {
             return res.status(400).json({ error: "Invalid body provided" });
         }
-        const post = await db.post.findUnique({ where: { id: req.params.id } });
+        const post = await db.post.findUnique({ where: { id: req.params.postId } });
         if (! post || post.authorId !== req.user.id) {
             return res.status(403).json({ error: "Post does not exist or you are its owner" });
         }

@@ -19,6 +19,7 @@ export default {
         idInParam: () => param('postId').isString().withMessage('Invalid id provided'),
         titleInBody: () => body('title').isString().isLength({ min: 2 }).withMessage('Title must be at least 2 characters long'),
         contentInBody: () => body('content').isString().isLength({ min: 2 }).withMessage('Content must be at least 2 characters long'),
+        $fromInQuery: () => query('from').optional().isFloat().withMessage('From query parameter must be a timestamp'),
     },
     comment: {
         idInParam: () => param('commentId').isString().withMessage('Invalid id provided'),

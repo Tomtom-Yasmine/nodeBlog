@@ -7,18 +7,69 @@ import {
     updatePostComment,
     deletePostComment,
 } from '../handlers/comment';
+import validators from '../modules/validators';
+
 
 const app = express.Router();
 
-app.get('/posts', enrichUser, getAllPosts); // ?from=[Date]
-app.get('/post/:id', enrichUser, getPostById);
-app.post('/post', createPost);
-app.put('/post/:id', enrichUser, updatePost);
-app.delete('/post/:id', enrichUser, deletePost);
+app.get(
+    '/posts',
+    enrichUser,
+    validators.post.$fromInQuery(),
+    getAllPosts
+);
+app.get(
+    '/post/:postId',
+    enrichUser,
+    validators.post.idInParam(),
+    getPostById
+);
+app.post(
+    '/post',
+    validators.post.titleInBody(),
+    validators.post.contentInBody(),
+    createPost
+);
+app.put(
+    '/post/:postId',
+    enrichUser,
+    validators.post.idInParam(),
+    validators.post.titleInBody() || validators.post.contentInBody(),
+    updatePost
+);
+app.delete(
+    '/post/:postId',
+    enrichUser,
+    validators.post.idInParam(),
+    deletePost
+);
 
-app.get('/post/:id/comments', enrichUser, getPostComments);
-app.post('/post/:id/comment', enrichUser, createPostComment);
-app.put('/comment/:commentId', enrichUser, updatePostComment);
-app.delete('/comment/:commentId', enrichUser, deletePostComment);
+app.get(
+    '/post/:postId/comments',
+    enrichUser,
+    validators.post.idInParam(),
+    getPostComments
+);
+app.post(
+    '/post/:id/comment',
+    enrichUser,
+    validators.post.idInParam(),
+    validators.comment.titleInBody(),
+    validators.comment.contentInBody(),
+    createPostComment
+);
+app.put(
+    '/comment/:commentId',
+    enrichUser,
+    validators.comment.idInParam(),
+    validators.comment.titleInBody() || validators.comment.contentInBody(),
+    updatePostComment
+);
+app.delete(
+    '/comment/:commentId',
+    enrichUser,
+    validators.comment.idInParam(),
+    deletePostComment
+);
 
 export default app;
