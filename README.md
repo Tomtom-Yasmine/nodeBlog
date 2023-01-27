@@ -27,15 +27,18 @@ Notre API permet aux utilisateurs de :
 
 ## Installation
 ### Git clone
-```bash 
-git clone https://github.com/Tomtom-Yasmine/nodeBlog.git```
+``` 
+git clone https://github.com/Tomtom-Yasmine/nodeBlog.git
+```
 
 ### NPM
-```bash
-npm install && npm run build```
+```
+npm install && npm run build
+```
 
-```bash
-npm run start```
+```
+npm run start
+```
     
 ## Routes
 
