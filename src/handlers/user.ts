@@ -27,7 +27,13 @@ export const createNewUser: RequestHandler = async (req: TypedRequestParam, res)
 
     const token = createJWT(user);
 
-    return res.status(201).json({ token });
+    return res.status(201).json({
+      sessionToken: token,
+      user: {
+        ...user,
+        password: undefined
+      }
+    });
   } catch (e) {
     res.status(400).json({ error: e });
   }
@@ -52,7 +58,9 @@ export const signIn: RequestHandler = async (req: TypedRequestParam, res) => {
       }
 
       const token = createJWT(user);
-      return res.status(200).json({ token });
+      return res.status(200).json({
+        sessionToken: token
+      });
     }
   } catch (e) {
     res.status(500);
@@ -60,9 +68,33 @@ export const signIn: RequestHandler = async (req: TypedRequestParam, res) => {
   }
 };
 
+export const getUsers: RequestHandler = async (req, res) => {
+  try {
+    const users = await db.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+
+        password: false
+      }
+    });
+    if (users) {
+      return res.status(200).json({ users });
+    } else {
+      return res.status(404).json({ error: 'Users not found' });
+    }
+  } catch (e) {
+    console.error({ error: e });
+    return res.status(500);
+  }
+};
+
 export const grantRoleToUser: RequestHandler = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.params.userId;
     const newRole = req.body.role as Role;
     if (! (id && newRole)) {
       throw new Error('Invalid body provided');

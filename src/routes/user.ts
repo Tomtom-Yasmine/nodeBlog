@@ -6,13 +6,21 @@ import {
 } from '../modules/auth';
 import {
   deleteUser,
+  getUsers,
   grantRoleToUser,
 } from '../handlers/user';
 
 const app = express.Router();
 
 app.get(
-  '/grant/:id/:newRole',
+  '/users',
+  enrichUser,
+  adminProtect,
+  getUsers
+);
+
+app.put(
+  '/user/:userId/grant',
   enrichUser,
   adminProtect,
   grantRoleToUser
