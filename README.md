@@ -46,6 +46,10 @@ Toutes les routes commençant par `/api` sont protégées par un jeton d'authent
 Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'express-validator (hors `comment`, en cours de développement).
 
 
+### Informations de connexion
+
+
+#### Compte admin
 ```JSON
   {
     "username": "admin",
