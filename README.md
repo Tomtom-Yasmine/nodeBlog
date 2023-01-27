@@ -34,19 +34,17 @@ git clone https://github.com/Tomtom-Yasmine/nodeBlog.git
 ### NPM
 ```
 npm install && npm run build
-```
-
-```
 npm run start
 ```
-    
-## Routes
 
-Toutes les routes commençant par `/api` sont protégées par un jeton d'authentification.
-Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'express-validator (hors `comment`, en cours de développement).
+## Variables d'environnement
+```INI
+DATABASE_URL="postgres://ipssi_express_test_riuo_user:pt9KmJkqCKK3vHXd8OBiLyB974MSEGeC@dpg-cf7bb36n6mplrj31b3dg-a.frankfurt-postgres.render.com/ipssi_express_test_riuo"
+JWT_SECRET="aTgIhksdhjkAUOIE%"
+PORT=3001 #Render.com requires this to be set to 3001
+```
 
-
-### Informations de connexion
+## Utilisateurs pré-existants dans la base de données
 
 
 #### Compte admin
@@ -70,9 +68,17 @@ Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'ex
     "password": "5fbd#iyhs^.fPv|K"
 }
 ```
+
+## Routes
+
+Toutes les routes commençant par `/api` sont protégées par un jeton d'authentification.
+Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'express-validator (hors `comment`, en cours de développement).
+
+
+
 ### SignIn & SignUp
 
-`POST '/signUp'` : Cette route permet à un utilisateur de s'inscrire. Elle retourne les informations de l'utilisateur connecté (sauf le password). Par défaut un utilisateur a le role "USER".
+`POST /signUp` : Cette route permet à un utilisateur de s'inscrire. Elle retourne les informations de l'utilisateur connecté (sauf le password) et le token de session. Par défaut un utilisateur a le role "USER".
  #### Corps de la requete (exemple)
 ```JSON
   {
@@ -81,7 +87,7 @@ Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'ex
   }
 
 ```
-`POST '/signIn'` :  Cette route permet à un utilisateur de se connecter. Elle retourne le token de l'utilisateur.
+`POST /signIn` :  Cette route permet à un utilisateur de se connecter. Elle retourne le token de l'utilisateur.
  #### Corps de la requete (exemple)
 ```JSON
   {
@@ -91,11 +97,11 @@ Toutes les routes contenant un corps de requête sont vérifiées à l'aide d'ex
 ```
 
 ### User Routes
-Toutes les routes  utilisent le middleware enrichUser pour ajouter l'information du rôle de l'utilisateur connecté à la requête.
+Toutes les routes  utilisent le middleware `enrichUser` pour ajouter l'information du rôle de l'utilisateur connecté à la requête. Ces routes ne sont utilisables que par un admin.
 
-`GET '/users'` : Cette route permet de récupérer une liste de tous les utilisateurs enregistrés dans la base de données.  
+`GET /users` : Cette route permet de récupérer une liste de tous les utilisateurs enregistrés dans la base de données.  
 
-`PUT '/user/:userId/grant'` :
+`PUT /user/:userId/grant` :
 Cette route permet de donner un rôle spécifique à un utilisateur en fonction de son ID. 
  #### Corps de la requete (exemple)
 ```JSON
@@ -103,13 +109,13 @@ Cette route permet de donner un rôle spécifique à un utilisateur en fonction 
     "role" : "ADMIN"
   }
 ```
-`DELETE '/user/:id'` :
+`DELETE /user/:id` :
 Cette route permet de supprimer un utilisateur en fonction de son ID. 
 
 ### Post Routes
-Toutes les routes (sauf `PUT /api/post`) utilisent le middleware enrichUser pour ajouter l'information du rôle de l'utilisateur connecté à la requête.
+Toutes les routes (sauf `PUT /api/post`) utilisent le middleware `enrichUser` pour ajouter l'information du rôle de l'utilisateur connecté à la requête.
 
-`GET /api/posts?[from=?]` : Cette route permet de récupérer la liste de tous les articles de blog ainsi que les commentaires associés. Elle peut prendre un paramètre optionnel from qui est une date au format timestamp qui permet de récupérer uniquement les articles créés après cette date. 
+`GET /api/posts?[from=timestamp]` : Cette route permet de récupérer la liste de tous les articles de blog ainsi que les commentaires associés. Elle peut prendre un paramètre optionnel from qui est une date au format timestamp qui permet de récupérer uniquement les articles créés après cette date. 
 
 `GET /api/post/:postId` : Cette route permet de récupérer un article de blog en particulier en fonction de son identifiant. 
 
@@ -143,7 +149,7 @@ Toutes les routes (sauf `PUT /api/post`) utilisent le middleware enrichUser pour
 ```
 
 ### Comment Routes
-Toutes les routes utilisent le middleware enrichUser pour ajouter l'information du rôle de l'utilisateur connecté à la requête.
+Toutes les routes utilisent le middleware `enrichUser` pour ajouter l'information du rôle de l'utilisateur connecté à la requête.
 
 `PUT /comment/:commentId` : Cette route permet de mettre à jour un commentaire en fonction de son identifiant. Seul l'auteur du commentaire peut le modifier.
  #### Corps de la requete (exemple)
@@ -158,4 +164,4 @@ Toutes les routes utilisent le middleware enrichUser pour ajouter l'information 
 
 ## Conclusion
 
-Nous espérons que vous aimerez notre API !
+Nous n'avons malheureusement pas eu le temps de faire fonctionner la configuration Docker malgré le temps passé sur celle-ci. Mais nous avons fait notre maximum sur cette partie.
