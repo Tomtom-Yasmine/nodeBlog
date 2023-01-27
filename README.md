@@ -12,7 +12,7 @@ Ce projet est une API en utilisant Node.js, Express. Il permet aux utilisateurs 
 
 ## Prérequis
 
-- Une application permettant de tester des requêtes telle que Postman.
+- Une application permettant de tester des requêtes telle que Postman
 
 
 
